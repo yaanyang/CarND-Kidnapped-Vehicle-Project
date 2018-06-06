@@ -32,7 +32,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     num_particles = 50;
 
     // Initial weight
-    double init_weight = 1.0 / num_particles;
+    double init_weight = 1.0;
 
     // Create normal (Gaussian) distributions for x, y and theta
     normal_distribution<double> dist_x(x, std[0]);
