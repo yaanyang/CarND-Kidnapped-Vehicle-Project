@@ -63,7 +63,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	//  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
 	//  http://www.cplusplus.com/reference/random/default_random_engine/
 
-    for (int i = 0; i < particles.size(); ++i) {
+    for (unsigned int i = 0; i < particles.size(); ++i) {
         // If yaw_rate = 0
         if (fabs(yaw_rate) < numeric_limits<double>::epsilon()) {
             particles[i].x += velocity * delta_t * cos(particles[i].theta);
@@ -94,9 +94,9 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 	// NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
 	//   implement this method and use it as a helper during the updateWeights phase.
 
-    for (int i = 0; i < observations.size(); ++i) {
+    for (unsigned int i = 0; i < observations.size(); ++i) {
         double dist_min = numeric_limits<double>::max();
-        for (int j = 0; j < predicted.size(); ++j) {
+        for (unsigned int j = 0; j < predicted.size(); ++j) {
             double distance = dist(observations[i].x, observations[i].y, predicted[j].x, predicted[j].y);
 
             // If no assignment yet or smaller distance found, assign that landmark to this observation
@@ -122,13 +122,13 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   http://planning.cs.uiuc.edu/node99.html
 
     // Step through each particle
-    for (int i = 0; i < particles.size(); ++i) {      
+    for (unsigned int i = 0; i < particles.size(); ++i) {      
         
         // Hold observations in map's coordinates
         std::vector<LandmarkObs> observations_map;
 
         // Transform each observation from vehicle's coordinates to map's coordinates
-        for (int j = 0; j < observations.size(); ++j) {            
+        for (unsigned int j = 0; j < observations.size(); ++j) {            
             LandmarkObs obs_map;
 
             obs_map.x = particles[i].x + (cos(particles[i].theta) * observations[j].x) - (sin(particles[i].theta) * observations[j].y);
@@ -141,7 +141,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         std::vector<LandmarkObs> predicted_meas;
         
         // Predicted measurement for each landmark with sensor range for this particle
-        for (int j = 0; j < map_landmarks.landmark_list.size(); ++j) {
+        for (unsigned int j = 0; j < map_landmarks.landmark_list.size(); ++j) {
             LandmarkObs pred_meas;
 
             double distance = dist(particles[i].x, particles[i].y, map_landmarks.landmark_list[j].x_f, map_landmarks.landmark_list[j].y_f);
@@ -159,16 +159,18 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         dataAssociation(predicted_meas, observations_map);
 
         // Calculate new weight
-        for (int j = 0; j < observations_map.size(); ++j) {
+        for (unsigned int j = 0; j < observations_map.size(); ++j) {
             //  Current observation
             double x_obs = observations_map[j].x;
             double y_obs = observations_map[j].y;
+            double mu_x;
+            double mu_y;
 
             // Find associated landmark
-            for (int k = 0; k < predicted_meas.size(); ++k) {
+            for (unsigned int k = 0; k < predicted_meas.size(); ++k) {
                 if (predicted_meas[k].id == observations_map[j].id) {
-                    double mu_x = predicted_meas[k].x;
-                    double mu_y = predicted_meas[k].y;
+                    mu_x = predicted_meas[k].x;
+                    mu_y = predicted_meas[k].y;
                 }
             }
 
@@ -215,6 +217,7 @@ Particle ParticleFilter::SetAssociations(Particle& particle, const std::vector<i
     particle.associations= associations;
     particle.sense_x = sense_x;
     particle.sense_y = sense_y;
+    return particle;
 }
 
 string ParticleFilter::getAssociations(Particle best)
