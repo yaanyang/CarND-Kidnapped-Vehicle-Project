@@ -50,7 +50,8 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 		sample_particle.theta = dist_theta(gen);
         sample_particle.weight = init_weight;
 
-        particles.push_back(sample_particle);        
+        particles.push_back(sample_particle);
+        weights.push_back(init_weight);
     }
 
     is_initialized = true;
@@ -164,7 +165,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         dataAssociation(predicted_meas, observations_map);
 
         // Re-initialize particle weight
-        //particles[i].weight = 1.0;
+        particles[i].weight = 1.0;
                 
         // Calculate new weight
         for (unsigned int j = 0; j < observations_map.size(); ++j) {
@@ -192,6 +193,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
             // Update final weight for each particle
             particles[i].weight *= obs_weight;            
         }
+        // Store final weight for this particle
+        weights[i] = particles[i].weight; 
     }
 }
 
@@ -202,11 +205,6 @@ void ParticleFilter::resample() {
 
     // Hold new particles
     vector<Particle> new_particles (num_particles);
-
-    // Hold all particle weights
-    for (int i = 0; i < num_particles; ++i) {
-        weights.push_back(particles[i].weight);
-    }
 
     // Generate discrete distribution propotional to particle weights
     discrete_distribution<int> dist_index (weights.begin(), weights.end());
