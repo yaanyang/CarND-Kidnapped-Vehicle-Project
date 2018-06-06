@@ -19,7 +19,7 @@
 
 using namespace std;
 
-// Create default_random_engine 
+// Create default_random_engine for later use
 static default_random_engine gen;
 
 void ParticleFilter::init(double x, double y, double theta, double std[]) {
@@ -29,7 +29,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
 
     // Set number of particles
-    num_particles = 50;
+    num_particles = 1000;
 
     // Initial weight
     double init_weight = 1.0;
