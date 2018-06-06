@@ -164,7 +164,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         dataAssociation(predicted_meas, observations_map);
 
         // Re-initialize particle weight
-        particles[i].weight = 1.0;
+        //particles[i].weight = 1.0;
                 
         // Calculate new weight
         for (unsigned int j = 0; j < observations_map.size(); ++j) {
